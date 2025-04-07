@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "commander": "^13.1.0",
+    "d3": "^7.9.0",
+    "katex": "^0.16.21",
+    "markmap-lib": "^0.18.11",
+    "markmap-view": "^0.18.10",
+    "puppeteer": "^24.6.0",
+    "webfontloader": "^1.6.28"
+  }
+}

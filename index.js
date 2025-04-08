@@ -124,7 +124,7 @@ program
             .replace(/<br([^>]*)>/g, '<br$1 />')
             .replace(/<hr([^>]*)>/g, '<hr$1 />');
 
-        fs.writeFileSync(outputPath, svgContent, 'utf-8');
+        fs.writeFileSync(outputPath, fixedSvgContent, 'utf-8');
 
         console.log('✅ Export is Successful:', outputPath);
 

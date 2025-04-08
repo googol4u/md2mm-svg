@@ -15,16 +15,16 @@ const program = new Command();
 
 program
 .name('md2svg')
-.description('Markdown 转 SVG 思维导图 CLI 工具（使用本地node_modules依赖）')
+.description('Markdown to SVG Mindmap CLI Tool (Uses Local node_modules Dependencies)')
 .version('1.0.0')
-.argument('<input>', '输入markdown文件')
-.argument('[output]', '输出svg文件，默认与输入文件同名')
+.argument('<input>', 'Input Markdown File')
+.argument('[output]', 'Output SVG File，defaults to the input filename without extension, and add .svg.')
 .action(async(input, output) => {
     const inputPath = path.resolve(input);
     const outputPath = output ? path.resolve(output) : inputPath.replace(/\.md$/, '.svg');
 
     if (!fs.existsSync(inputPath)) {
-        console.error('输入文件不存在:', inputPath);
+        console.error('File Not Found:', inputPath);
         process.exit(1);
     }
 
@@ -34,7 +34,7 @@ program
         root
     } = transformer.transform(markdownContent);
 
-    // 使用内置HTTP服务器提供静态文件服务
+    // Serve static files using the built-in HTTP server.
     const server = http.createServer((req, res) => {
         let filePath = path.join(__dirname, req.url === '/' ? 'template.html' : req.url);
 
@@ -82,11 +82,11 @@ program
 
             const svg = document.querySelector('svg#mindmap');
 
-            // 修复 img 自封闭标签（如果需要你可以保留这个）
+            // Fix self-closing <img> tags (keep them if needed).
             svg.querySelectorAll('img').forEach(img => {
-                // 如果不是自封闭（即没有结尾的 />），手动替换
+                // If not self-closing (i.e., missing the ending />), replace manually.
                 if (!img.outerHTML.endsWith('/>')) {
-                    const newImg = img.cloneNode(true); // 深复制属性
+                    const newImg = img.cloneNode(true); // Deep copy properties.
                     const imgString = newImg.outerHTML.replace(/>$/, ' />');
                     img.replaceWith(new DOMParser().parseFromString(imgString, 'image/svg+xml').documentElement);
                 }
@@ -103,22 +103,22 @@ program
                 }
             });
 
-            // 👇 添加 viewBox 和适配尺寸
+            // 👇 Add viewBox and adjust dimensions.
             const bbox = svg.getBBox();
-            const padding = 20; // 增加一点边距
+            const padding = 20; // Add some margin.
             const viewBox = `${bbox.x - padding} ${bbox.y - padding} ${bbox.width + 2 * padding} ${bbox.height + 2 * padding}`;
             svg.setAttribute('viewBox', viewBox);
             svg.setAttribute('width', `${bbox.width + 2 * padding}`);
             svg.setAttribute('height', `${bbox.height + 2 * padding}`);
 
-            // 为 Typora 适配：去除任何硬编码样式可能更好
+            // Adapt for Typora: removing any hardcoded styles
             svg.removeAttribute('style');
 
         });
 
         const svgContent = await page.$eval('#mindmap', el => el.outerHTML);
 
-        // ⚠️ 后处理：修复 <img> 没有自封闭的标签问题
+        // ⚠️ Post-processing: fix issues with non-self-closing tags.
         const fixedSvgContent = svgContent
             .replace(/<img([^>]*)>/g, '<img$1 />')
             .replace(/<br([^>]*)>/g, '<br$1 />')
@@ -126,7 +126,7 @@ program
 
         fs.writeFileSync(outputPath, svgContent, 'utf-8');
 
-        console.log('✅ 导出成功:', outputPath);
+        console.log('✅ Export is Successful:', outputPath);
 
         await browser.close();
         server.close();

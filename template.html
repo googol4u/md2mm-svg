@@ -11,7 +11,7 @@
   <script src="./assets/d3.min.js"></script>
   <script src="./assets/markmap-view.min.js"></script>
   <script src="./assets/webfontloader.js" defer></script>
-<!-- 配置并加载 KaTeX 字体 -->
+<!-- Configure and load KaTeX fonts. -->
   <script>
 	  window.WebFontConfig = {
 		custom: {
@@ -31,7 +31,7 @@
 		  ]
 		},
 		active: () => {
-		  // 字体加载完成后可以刷新 markmap 以确保布局正常
+		  // After the fonts are loaded, refresh the markmap to ensure proper layout.
 		  if (window.markmap?.refreshHook?.call) {
 			window.markmap.refreshHook.call();
 		  }
